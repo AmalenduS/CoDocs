@@ -1,0 +1,256 @@
+---
+################################################################################
+#
+#   Section: Organizations
+#
+#   - This section defines the different organizational identities which will
+#   be referenced later in the configuration.
+#
+################################################################################
+Organizations:
+    - &OrdererOrg
+        Name: OrdererOrg
+
+        ID: OrdererMSP
+
+        MSPDir: ../ca-network/organizations/ordererOrganizations/codocs.com/msp
+
+        Policies:
+            Readers:
+                Type: Signature
+                Rule: "OR('OrdererMSP.member')"
+            Writers:
+                Type: Signature
+                Rule: "OR('OrdererMSP.member')"
+            Admins:
+                Type: Signature
+                Rule: "OR('OrdererMSP.admin')"
+
+    - &patient
+        Name: patientMSP
+
+        ID: patientMSP
+
+        MSPDir: ../ca-network/organizations/peerOrganizations/patient.codocs.com/msp
+
+        Policies:
+            Readers:
+                Type: Signature
+                Rule: "OR('patientMSP.admin', 'patientMSP.peer', 'patientMSP.client')"
+            Writers:
+                Type: Signature
+                Rule: "OR('patientMSP.admin', 'patientMSP.client')"
+            Admins:
+                Type: Signature
+                Rule: "OR('patientMSP.admin')"
+            Endorsement:
+                Type: Signature
+                Rule: "OR('patientMSP.peer')"
+
+        AnchorPeers:
+            - Host: peer0.patient.codocs.com
+              Port: 7051
+
+    - &provider
+        Name: providerMSP
+
+        ID: providerMSP
+
+        MSPDir: ../ca-network/organizations/peerOrganizations/provider.codocs.com/msp
+
+        Policies:
+            Readers:
+                Type: Signature
+                Rule: "OR('providerMSP.admin', 'providerMSP.peer', 'providerMSP.client')"
+            Writers:
+                Type: Signature
+                Rule: "OR('providerMSP.admin', 'providerMSP.client')"
+            Admins:
+                Type: Signature
+                Rule: "OR('providerMSP.admin')"
+            Endorsement:
+                Type: Signature
+                Rule: "OR('providerMSP.peer')"
+
+        AnchorPeers:
+            - Host: peer0.provider.codocs.com
+              Port: 9051
+   
+    - &admin
+        Name: adminMSP
+
+        ID: adminMSP
+
+        MSPDir: ../ca-network/organizations/peerOrganizations/admin.codocs.com/msp
+
+        Policies:
+            Readers:
+                Type: Signature
+                Rule: "OR('adminMSP.admin', 'adminMSP.peer', 'adminMSP.client')"
+            Writers:
+                Type: Signature
+                Rule: "OR('adminMSP.admin', 'adminMSP.client')"
+            Admins:
+                Type: Signature
+                Rule: "OR('adminMSP.admin')"
+            Endorsement:
+                Type: Signature
+                Rule: "OR('adminMSP.peer')"
+
+        AnchorPeers:
+            - Host: peer0.admin.codocs.com
+              Port: 11051
+
+Capabilities:
+    Channel: &ChannelCapabilities
+        V2_0: true
+
+    Orderer: &OrdererCapabilities
+        V2_0: true
+
+    Application: &ApplicationCapabilities
+        V2_0: true
+
+################################################################################
+#   SECTION: Application
+################################################################################
+Application: &ApplicationDefaults
+
+    Organizations:
+
+    Policies:
+        Readers:
+            Type: ImplicitMeta
+            Rule: "ANY Readers"
+        Writers:
+            Type: ImplicitMeta
+            Rule: "ANY Writers"
+        Admins:
+            Type: ImplicitMeta
+            Rule: "MAJORITY Admins"
+        LifecycleEndorsement:
+            Type: ImplicitMeta
+            Rule: "MAJORITY Endorsement"
+        Endorsement:
+            Type: ImplicitMeta
+            Rule: "MAJORITY Endorsement"
+
+    Capabilities:
+        <<: *ApplicationCapabilities
+
+################################################################################
+#   SECTION: Orderer
+################################################################################
+Orderer: &OrdererDefaults
+    OrdererType: etcdraft
+    EtcdRaft:
+        Consenters:
+        - Host: orderer.codocs.com
+          Port: 7050
+          ClientTLSCert: ../ca-network/organizations/ordererOrganizations/codocs.com/orderers/orderer.codocs.com/tls/server.crt
+          ServerTLSCert: ../ca-network/organizations/ordererOrganizations/codocs.com/orderers/orderer.codocs.com/tls/server.crt
+        - Host: orderer2.codocs.com
+          Port: 8050
+          ClientTLSCert: ../ca-network/organizations/ordererOrganizations/codocs.com/orderers/orderer2.codocs.com/tls/server.crt
+          ServerTLSCert: ../ca-network/organizations/ordererOrganizations/codocs.com/orderers/orderer2.codocs.com/tls/server.crt
+        - Host: orderer3.codocs.com
+          Port: 9050
+          ClientTLSCert: ../ca-network/organizations/ordererOrganizations/codocs.com/orderers/orderer3.codocs.com/tls/server.crt
+          ServerTLSCert: ../ca-network/organizations/ordererOrganizations/codocs.com/orderers/orderer3.codocs.com/tls/server.crt
+        - Host: orderer4.codocs.com
+          Port: 10050
+          ClientTLSCert: ../ca-network/organizations/ordererOrganizations/codocs.com/orderers/orderer4.codocs.com/tls/server.crt
+          ServerTLSCert: ../ca-network/organizations/ordererOrganizations/codocs.com/orderers/orderer4.codocs.com/tls/server.crt
+        - Host: orderer5.codocs.com
+          Port: 11050
+          ClientTLSCert: ../ca-network/organizations/ordererOrganizations/codocs.com/orderers/orderer5.codocs.com/tls/server.crt
+          ServerTLSCert: ../ca-network/organizations/ordererOrganizations/codocs.com/orderers/orderer5.codocs.com/tls/server.crt
+    Addresses:
+        - orderer.codocs.com:7050
+        - orderer2.codocs.com:8050
+        - orderer3.codocs.com:9050
+        - orderer4.codocs.com:10050
+        - orderer5.codocs.com:11050
+
+    BatchTimeout: 2s
+
+    BatchSize:
+
+        MaxMessageCount: 10
+
+        AbsoluteMaxBytes: 99 MB
+
+        PreferredMaxBytes: 512 KB
+
+    Organizations:
+
+    Policies:
+        Readers:
+            Type: ImplicitMeta
+            Rule: "ANY Readers"
+        Writers:
+            Type: ImplicitMeta
+            Rule: "ANY Writers"
+        Admins:
+            Type: ImplicitMeta
+            Rule: "MAJORITY Admins"
+        BlockValidation:
+            Type: ImplicitMeta
+            Rule: "ANY Writers"
+
+################################################################################
+#   CHANNEL
+################################################################################
+Channel: &ChannelDefaults
+    Policies:
+        Readers:
+            Type: ImplicitMeta
+            Rule: "ANY Readers"
+        Writers:
+            Type: ImplicitMeta
+            Rule: "ANY Writers"
+        Admins:
+            Type: ImplicitMeta
+            Rule: "MAJORITY Admins"
+
+    Capabilities:
+        <<: *ChannelCapabilities
+
+################################################################################
+#   Profile
+################################################################################
+Profiles:
+
+    codocschannel:
+        Consortium: codocsConsortium
+        <<: *ChannelDefaults
+        Application:
+            <<: *ApplicationDefaults
+            Organizations:
+                - *patient
+                - *provider
+                - *admin
+            Capabilities:
+                <<: *ApplicationCapabilities
+
+    OrdererChannel:
+        <<: *ChannelDefaults
+        Capabilities:
+            <<: *ChannelCapabilities
+        Orderer:
+            <<: *OrdererDefaults
+
+            Organizations:
+            - *OrdererOrg
+            Capabilities:
+                <<: *OrdererCapabilities
+        Application:
+            <<: *ApplicationDefaults
+            Organizations:
+            - <<: *OrdererOrg
+        Consortiums:
+            codocsConsortium:
+                Organizations:
+                - *patient
+                - *provider
+                - *admin
