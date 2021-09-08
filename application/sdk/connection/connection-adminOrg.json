@@ -1,0 +1,60 @@
+{
+    "name": "codocs-network-codocsorg",
+    "version": "1.0.0",
+    "client": {
+        "organization": "codocsorg",
+        "connection": {
+            "timeout": {
+                "peer": {
+                    "endorser": "300"
+                }
+            }
+        }
+    },
+    "organizations": {
+        "codocsorg": {
+            "mspid": "codocsorgMSP",
+            "peers": [
+                "peer0.codocsorg.codocs.com",
+                "peer1.codocsorg.codocs.com"
+            ],
+            "certificateAuthorities": [
+                "ca.codocsorg.codocs.com"
+            ]
+        }
+    },
+    "peers": {
+        "peer0.codocsorg.codocs.com": {
+            "url": "grpcs://peer0.codocsorg.codocs.com:${P0PORT}",
+            "tlsCACerts": {
+                "pem": "${PEERPEM}"
+            },
+            "grpcOptions": {
+                "ssl-target-name-override": "peer0.codocsorg.codocs.com",
+                "hostnameOverride": "peer0.codocsorg.codocs.com"
+            }
+        },
+        "peer1.codocsorg.codocs.com": {
+            "url": "grpcs://peer1.codocsorg.codocs.com:${P1PORT}",
+            "tlsCACerts": {
+                "pem": "${PEERPEM}"
+            },
+            "grpcOptions": {
+                "ssl-target-name-override": "peer1.codocsorg.codocs.com",
+                "hostnameOverride": "peer1.codocsorg.codocs.com"
+            }
+        }
+    },
+    "certificateAuthorities": {
+        "ca.codocsorg.codocs.com": {
+            "url": "https://ca_codocsorg:${CAPORT}",
+            "caName": "ca-codocsorg",
+            "tlsCACerts": {
+                "pem": "${CAPEM}"
+            },
+            "httpOptions": {
+                "verify": false
+            }
+        }
+    }
+}
