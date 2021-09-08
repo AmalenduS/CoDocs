@@ -1,0 +1,12 @@
+{
+  "dependencies": {
+    "core-util-is": "^1.0.3",
+    "fabric-ca-client": "^2.2.9",
+    "fabric-network": "^2.2.9",
+    "mongoose": "^6.0.4",
+    "n": "^7.3.1",
+    "node": "^10.24.1",
+    "text-encoding": "^0.7.0",
+    "winston": "^3.3.3"
+  }
+}
